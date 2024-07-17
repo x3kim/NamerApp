@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange, surface: Colors.lightBlue[300], // Explicitly set surface color
+          ),
         ),
         home: MyHomePage(),
       ),
@@ -41,18 +42,25 @@ class MyHomePage extends StatelessWidget {
     var pair = appState.current;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('A random AWESOME idea:'),
-          BigCard(pair: pair),
-          
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();   // ← print('Button pressed!');
-            },
-            child: Text('Next!'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,            // Vertically center children
+          children: [
+            Text('A random AWESOME idea:'),
+            SizedBox(height: 20),                                 // spacing added
+            BigCard(pair: pair),
+            SizedBox(height: 20),                                 // spacing added
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(150, 0),                                      // added minimum width
+              ),
+              child: Text('Next!'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -68,19 +76,23 @@ class BigCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);          // ← the code requests the app's current theme with Theme.of(context)
+    final theme = Theme.of(context);                            // ← the code requests the app's current theme with Theme.of(context)
 
     final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
+      color: theme.colorScheme.onSurface,                       // Use onSurface for text on surface
     );
 
     return Card(
-      color: Colors.lightBlue.shade200,       // ← Then, the code defines the card's color to be the same as the theme's colorScheme
-                                              // property. The color scheme contains many colors, and primary is the most prominent,
-                                              // defining color of the app.
+      color: theme.colorScheme.surface,                          // ← Then, the code defines the card's color to be the same as the theme's colorScheme
+                                                                // property. The color scheme contains many colors, and primary is the most prominent,
+                                                                // defining color of the app.
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: Text(pair.asPascalCase, style: style),
+        child: Text(
+            pair.asPascalCase,                                  // Use PascalCase for consistency
+            style: style,
+            semanticsLabel: "${pair.first} ${pair.second}",     // fixed typo in interpolation
+        ),
       ),
     );
   }
