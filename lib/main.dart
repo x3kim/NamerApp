@@ -47,14 +47,14 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,            // Vertically center children
           children: [
-            SizedBox(height: 10),                                 // spacing added
+            SizedBox(height: 20),                                 // spacing added
             BigCard(pair: pair),
-            SizedBox(height: 10),                                 // spacing added
+            SizedBox(height: 20),                                 // spacing added
             ElevatedButton(
               onPressed: () {
                 appState.getNext();
               },
-              child: Text('Next!'),
+              child: Text('Random new pair'),
             ),
           ],
         ),
@@ -75,9 +75,10 @@ class BigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);                            // ← the code requests the app's current theme with Theme.of(context)
 
-    final style = theme.textTheme.labelSmall!.copyWith(
+    final style = theme.textTheme.headlineMedium!.copyWith(
       color: theme.colorScheme.onSurface,                       // Use onSurface for text on surface
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.bold,
+      fontSize: 16.0,
     );
 
     return Card(
