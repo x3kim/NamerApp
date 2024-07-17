@@ -70,13 +70,17 @@ class BigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);          // ← the code requests the app's current theme with Theme.of(context)
 
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
     return Card(
-      color: theme.colorScheme.primary,       // ← Then, the code defines the card's color to be the same as the theme's colorScheme
+      color: Colors.lightBlue.shade200,       // ← Then, the code defines the card's color to be the same as the theme's colorScheme
                                               // property. The color scheme contains many colors, and primary is the most prominent,
                                               // defining color of the app.
       child: Padding(
         padding: const EdgeInsets.all(15),
-        child: Text(pair.asPascalCase),
+        child: Text(pair.asPascalCase, style: style),
       ),
     );
   }
