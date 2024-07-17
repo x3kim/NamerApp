@@ -47,9 +47,8 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,            // Vertically center children
           children: [
-            SizedBox(height: 20),                                 // spacing added
             BigCard(pair: pair),
-            SizedBox(height: 20),                                 // spacing added
+            SizedBox(height: 14),                                 // spacing added
             ElevatedButton(
               onPressed: () {
                 appState.getNext();
@@ -78,7 +77,7 @@ class BigCard extends StatelessWidget {
     final style = theme.textTheme.headlineMedium!.copyWith(
       color: theme.colorScheme.onSurface,                       // Use onSurface for text on surface
       fontWeight: FontWeight.bold,
-      fontSize: 16.0,
+      fontSize: 28.0,
     );
 
     return Card(
@@ -86,7 +85,7 @@ class BigCard extends StatelessWidget {
                                                                 // property. The color scheme contains many colors, and primary is the most prominent,
                                                                 // defining color of the app.
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.fromLTRB(46.0, 16.0, 46.0, 16.0),   // fromLTRB = Left, Top, Right, Bottom
         child: Text(
             pair.asPascalCase,                                  // Use PascalCase for consistency
             style: style,
