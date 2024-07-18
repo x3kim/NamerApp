@@ -2,8 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+void main() {runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,11 +14,10 @@ class MyApp extends StatelessWidget {
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'Namer App',
-        debugShowCheckedModeBanner: false,                      // debug banner
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange, surface: Colors.lightBlue[300], // Explicitly set surface color
-          ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, surface: Colors.lightBlue[300]),
         ),
         home: MyHomePage(),
       ),
@@ -47,39 +45,63 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  var selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            child: NavigationRail(
-              extended: false,
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Favorites'),
-                ),
-              ],
-              selectedIndex: 0,
-              onDestinationSelected: (value) {
-                print('selected: $value');
-              },
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+        //break;
+      case 1:
+        page = FavoritesPage(); // Use FavoritesPage here
+        //break;
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 550,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
+              ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: GeneratorPage(),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      );
+    }
     );
   }
 }
@@ -137,27 +159,52 @@ class BigCard extends StatelessWidget {
   final WordPair pair;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);                            // ← the code requests the app's current theme with Theme.of(context)
+  Widget build(BuildContext context) {final theme = Theme.of(context);
 
-    final style = theme.textTheme.headlineMedium!.copyWith(
-      color: theme.colorScheme.onSurface,                       // Use onSurface for text on surface
-      fontWeight: FontWeight.bold,
-      fontSize: 24.0,
-    );
+  final style = theme.textTheme.headlineMedium!.copyWith(
+    color: theme.colorScheme.onSurface,
+    fontWeight: FontWeight.bold,
+    fontSize: 24.0,
+  );
 
-    return Card(
-      color: theme.colorScheme.surface,                         // ← Then, the code defines the card's color to be the same as the theme's colorScheme
-                                                                // property. The color scheme contains many colors, and primary is the most prominent,
-                                                                // defining color of the app.
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(44.0, 16.0, 44.0, 16.0),   // fromLTRB = Left, Top, Right, Bottom
-        child: Text(
-            pair.asPascalCase,                                  // Use PascalCase for consistency
-            style: style,
-            semanticsLabel: "${pair.first} ${pair.second}",     // fixed typo in interpolation
-        ),
+  return Card(
+    color: theme.colorScheme.surface,
+    child: Padding(
+      padding: EdgeInsets.fromLTRB(44.0, 16.0, 44.0, 16.0),
+      child: Text(
+        pair.asPascalCase,
+        style: style,
+        semanticsLabel: "${pair.first} ${pair.second}",
       ),
+    ),
+  );
+  }
+}
+
+// FavoritesPage is now a top-level class
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No favorites yet.'),
+      );
+    }
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have ${appState.favorites.length} favorites:'), // Fixed typo here
+        ),
+        for (var pair in appState.favorites)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(pair.asLowerCase),
+          ),
+      ],
     );
   }
 }
