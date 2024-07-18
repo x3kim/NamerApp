@@ -50,6 +50,43 @@ class MyAppState extends ChangeNotifier {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          SafeArea(
+            child: NavigationRail(
+              extended: false,
+              destinations: [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home),
+                  label: Text('Home'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.favorite),
+                  label: Text('Favorites'),
+                ),
+              ],
+              selectedIndex: 0,
+              onDestinationSelected: (value) {
+                print('selected: $value');
+              },
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: GeneratorPage(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GeneratorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
@@ -60,37 +97,32 @@ class MyHomePage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,            // Vertically center children
-          children: [
-            BigCard(pair: pair),
-            SizedBox(height: 14),                                 // spacing added
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-
-                ElevatedButton.icon(
-                    onPressed: () {
-                      appState.toggleFavorites();
-                    },
-                    icon: Icon(icon),
-                    label: Text('Like!'),
-                   ),
-                   SizedBox(width: 12),
-
-                ElevatedButton(
-                  onPressed: () {
-                    appState.getNext();
-                  },
-                  child: Text('Next pair'),
-                ),
-
-              ],
-            ),
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BigCard(pair: pair),
+          SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  appState.toggleFavorites();
+                },
+                icon: Icon(icon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -111,7 +143,7 @@ class BigCard extends StatelessWidget {
     final style = theme.textTheme.headlineMedium!.copyWith(
       color: theme.colorScheme.onSurface,                       // Use onSurface for text on surface
       fontWeight: FontWeight.bold,
-      fontSize: 28.0,
+      fontSize: 24.0,
     );
 
     return Card(
@@ -119,7 +151,7 @@ class BigCard extends StatelessWidget {
                                                                 // property. The color scheme contains many colors, and primary is the most prominent,
                                                                 // defining color of the app.
       child: Padding(
-        padding: EdgeInsets.fromLTRB(46.0, 16.0, 46.0, 16.0),   // fromLTRB = Left, Top, Right, Bottom
+        padding: EdgeInsets.fromLTRB(44.0, 16.0, 44.0, 16.0),   // fromLTRB = Left, Top, Right, Bottom
         child: Text(
             pair.asPascalCase,                                  // Use PascalCase for consistency
             style: style,
